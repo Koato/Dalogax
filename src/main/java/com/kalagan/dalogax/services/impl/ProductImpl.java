@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.kalagan.dalogax.dao.ProductDetail;
@@ -14,6 +15,9 @@ import com.kalagan.dalogax.services.IProductService;
 public class ProductImpl implements IProductService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProductImpl.class);
+	
+	@Autowired
+	private RestTemplate restTemplate;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -23,8 +27,7 @@ public class ProductImpl implements IProductService {
 		url.append(productId.trim());
 		url.append("/similarids");
 		LOGGER.info("url: {}", url);
-		RestTemplate plantilla = new RestTemplate();
-		List<SimilarProduct> resultado = plantilla.getForObject(url.toString(), List.class);
+		List<SimilarProduct> resultado = restTemplate.getForObject(url.toString(), List.class);
 		LOGGER.info("resultado: {}", resultado.toString());
 		return resultado;
 	}
@@ -35,8 +38,7 @@ public class ProductImpl implements IProductService {
 		url.append("product/");
 		url.append(productId.trim());
 		LOGGER.info("url: {}", url);
-		RestTemplate plantilla = new RestTemplate();
-		ProductDetail resultado = plantilla.getForObject(url.toString(), ProductDetail.class);
+		ProductDetail resultado = restTemplate.getForObject(url.toString(), ProductDetail.class);
 		LOGGER.info("resultado: {}", resultado);
 		return Optional.ofNullable(resultado);
 	}
